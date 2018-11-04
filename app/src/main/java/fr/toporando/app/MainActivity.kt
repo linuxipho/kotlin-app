@@ -45,14 +45,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val userAvatar = headerView.findViewById(R.id.user_avatar) as ImageView
         val userName = headerView.findViewById(R.id.user_name) as TextView
         val userEmail = headerView.findViewById(R.id.user_email) as TextView
-        val gravatarUrl = "https://www.gravatar.com/avatar/" + Gravatar.md5Hex(email)
-
-        Log.i("MainActivity", "Gravatar URL = $gravatarUrl")
 
         userName.text = name
         userEmail.text = email
 
-        Picasso.get().load(gravatarUrl)
+        Picasso.get().load(Gravatar.gravatarUrl(email))
             .placeholder(R.mipmap.ic_launcher)
             .error(R.mipmap.ic_launcher_round)
             .transform(CircleTransformation())

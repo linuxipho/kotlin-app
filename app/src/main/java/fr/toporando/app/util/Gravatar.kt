@@ -1,34 +1,30 @@
 package fr.toporando.app.util
 
-import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 /**
  * Created by Rémi de Chazelles on 15/10/18.
  */
 object Gravatar {
 
-    private fun hex(array: ByteArray): String {
-        val hexString = StringBuffer()
-        for (byte in array) {
-            val hex = Integer.toHexString(0xFF and byte.toInt())
-            if (hex.length == 1) hexString.append('0')
+    @Throws(Exception::class)
+    fun String.md5(): String {
+        val md = MessageDigest.getInstance("MD5")
+        md.update(this.toByteArray())
 
-//            val b:Byte = (byte and 0xFF) || 0x100
-//            sb.append(Integer.toHexString(b.substring(1, 3)))
+        val byteData = md.digest()
+        val hexString = StringBuffer()
+        for (i in byteData.indices) {
+            val hex = Integer.toHexString(255 and byteData[i].toInt())
+            if (hex.length == 1) hexString.append('0')
+            hexString.append(hex)
         }
+
         return hexString.toString()
     }
 
-    fun md5Hex(message: String): String? {
-        try {
-            val md = MessageDigest.getInstance("MD5")
-            return hex(md.digest(message.toByteArray(charset("CP1252"))))
-        } catch (e: NoSuchAlgorithmException) {
-        } catch (e: UnsupportedEncodingException) {
-        }
-
-        return null
+    fun gravatarUrl(email: String, size: Int = 80): String {
+        val hash = email.trim().toLowerCase().md5()
+        return "https://www.gravatar.com/avatar/$hash?s=$size"
     }
 }
